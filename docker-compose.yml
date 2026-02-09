@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    container_name: autonomus-backend
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - openclaw
+
+  db:
+    image: postgres:16
+    container_name: autonomus-db
+    environment:
+      POSTGRES_DB: autonomus
+      POSTGRES_USER: autonomus
+      POSTGRES_PASSWORD: autonomus
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  openclaw:
+    build:
+      context: .
+      dockerfile: docker/openclaw.Dockerfile
+    container_name: autonomus-openclaw
+
+volumes:
+  postgres_data:
